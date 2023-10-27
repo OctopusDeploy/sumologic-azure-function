@@ -24,6 +24,7 @@ module.exports = {
         "**/node_modules/**",
         "**/test/**",
         "**/tests/**",
+        "**/.travis.yml"
     ],
     packageRules: [
         {
