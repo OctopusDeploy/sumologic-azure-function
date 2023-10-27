@@ -5,7 +5,7 @@ azure-mgmt-storage==1.0.0
 azure-storage==0.34.3
 azure-mgmt-eventgrid==1.0.0
 azure-mgmt-eventhub==1.2.0
-azure-cosmosdb-table==1.0.2
+azure-cosmosdb-table==1.0.6
 azure-mgmt-authorization==0.50.0
 azure-graphrbac==0.51.0
 
