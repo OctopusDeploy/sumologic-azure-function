@@ -25,6 +25,7 @@ module.exports = {
         "**/test/**",
         "**/tests/**",
     ],
+    enabledManagers: ["npm"], // Exclude other package managers in this
     packageRules: [
         {
             matchPackageNames: [
