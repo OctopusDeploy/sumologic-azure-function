@@ -25,6 +25,7 @@ module.exports = {
         "**/test/**",
         "**/tests/**",
         "EventHubs/**", // We are only using the BlockBlobReader from this fork at this point in time
+        ".travis.yml",
     ],
     enabledManagers: ["npm"], // Exclude other package managers in this
     packageRules: [
