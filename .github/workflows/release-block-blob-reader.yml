@@ -44,6 +44,7 @@ jobs:
         with:
           cache: "npm"
           node-version: 18
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Build and Create Packages
         run: |
