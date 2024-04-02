@@ -43,7 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: 'npm'
-          node-version: 16
+          node-version: 18
           cache-dependency-path: BlockBlobReader/src/package-lock.json
           
       - name: Build and Create Packages
