@@ -1,0 +1,32 @@
+name: Renovate update dependencies
+concurrency: renovate
+on:
+  schedule:
+    - cron: '40 */2 * * *'
+  push:
+    paths: 
+      - 'renovate-config.js'
+      - '.github/workflows/renovate-update-dependencies.yml'
+    branches-ignore:
+      - main
+      - master
+      - octopus
+      - 'dependabot/**'
+
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    name: Self-hosted Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v39.2.3
+        with:
+          configurationFile: renovate-config.js
+          token: ${{ secrets.RENOVATE_GITHUB_TOKEN }}
+        env:
+          #LOG_LEVEL: debug
+          RENOVATE_CLOUD_PLATFORM_PROTECTED_BRANCH:  ${{ github.ref_protected }}
