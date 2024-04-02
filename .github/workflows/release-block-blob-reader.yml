@@ -44,7 +44,6 @@ jobs:
         with:
           cache: "npm"
           node-version: 18
-          cache-dependency-path: BlockBlobReader/src/package-lock.json
 
       - name: Build and Create Packages
         run: |
