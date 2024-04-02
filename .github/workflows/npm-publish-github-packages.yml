@@ -123,9 +123,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: blockblobreader_${{ needs.calculate-version.outputs.full_version }}
-      - name: "List files"
-        run: |
-          ls -lar;
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
