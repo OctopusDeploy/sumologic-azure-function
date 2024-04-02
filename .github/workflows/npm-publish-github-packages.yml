@@ -119,14 +119,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [calculate-version, build-packages]
     steps:
-      - name: Download math result for job 1
+      - name: Download packages
         uses: actions/download-artifact@v4
         with:
           name: blockblobreader_${{ needs.calculate-version.outputs.full_version }}
+      - name: List files
+        run: |
+          ls -lar
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: ${{ needs.calculate-version.outputs.prerelease }}
           automatic_release_tag: v${{ needs.calculate-version.outputs.full_version }}
-          files: blockblobreader_${{ needs.calculate-version.outputs.full_version }}/*.zip
+          files: *.zip
             
