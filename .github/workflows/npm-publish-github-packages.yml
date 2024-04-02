@@ -123,10 +123,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: blockblobreader_${{ needs.calculate-version.outputs.full_version }}
-
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: ${{ needs.calculate-version.outputs.prerelease }}
           automatic_release_tag: v${{ needs.calculate-version.outputs.full_version }}
-          files: *.zip
+          files: ./*.zip
+            
