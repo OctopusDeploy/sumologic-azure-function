@@ -1,57 +1,14 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
 name: "tagged-release"
 
-env:
-  MAJOR_VERSION: 4
-
 on:
-  pull_request:
-    branches:
-      - master
-  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
 
 jobs:
-  calculate-version:
-    name: Calculate version
-    runs-on: ubuntu-latest
-    outputs:
-      full_version: ${{ steps.version_setter.outputs.full_version }}
-      version: ${{ steps.version_setter.outputs.version }}
-      branch: ${{ steps.version_setter.outputs.branch }}
-      prerelease: ${{ steps.version_setter.outputs.prerelease }}
-    steps:
-      - id: version_setter
-        run: |
-          # This gets the name of the current Git branch. 
-          BRANCH="${{ github.ref_name }}"
-
-          # Sometimes the branch will be a full path, e.g. 'john/mybranch'. 
-          # If so we'll base our logic just on the last part.
-          BRANCH=${BRANCH##*/}
-          
-          # Filter out illegal characters, replace with '-'
-          BRANCH=$(echo $BRANCH | tr '[:punct:]' -)
-          echo "Branch: $BRANCH"
-          echo "::set-output name=branch::$BRANCH"
-          
-          VERSION="$MAJOR_VERSION.${{ github.run_number }}.0"
-          echo "::set-output name=version::$VERSION"
-          PRERELEASE=false
-
-          if [[ "$BRANCH" != "master" ]]; then
-            VERSION="$VERSION-$BRANCH"
-            PRERELEASE=true
-          fi
-          echo "Build number: $VERSION" >> $GITHUB_STEP_SUMMARY
-
-          echo "::set-output name=full_version::$VERSION"
-          echo "::set-output name=prerelease::$PRERELEASE"
-
   build-packages:
     name: Build Packages
     runs-on: ubuntu-latest
-    needs: calculate-version
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -60,7 +17,7 @@ jobs:
           node-version: 18
           cache-dependency-path: '**/package-lock.json'
 
-      - name: Build and Create Packages
+      - name: Create BlockBlobReader Packages
         run: |
           cd BlockBlobReader/target
 
@@ -109,24 +66,22 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: blockblobreader_${{ needs.calculate-version.outputs.full_version }}
+          name: blockblobreader_${{ github.ref_name }}
           if-no-files-found: error
           retention-days: 1
           path: ./BlockBlobReader/target_zip/*.zip
 
   tagged-release:
-    name: "Tagged Release"
+    name: "Create Release"
     runs-on: ubuntu-latest
-    needs: [calculate-version, build-packages]
+    needs: [build-packages]
     steps:
       - name: Download packages
         uses: actions/download-artifact@v4
         with:
-          name: blockblobreader_${{ needs.calculate-version.outputs.full_version }}
+          name: blockblobreader_${{ github.ref_name }}
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: ${{ needs.calculate-version.outputs.prerelease }}
-          automatic_release_tag: v${{ needs.calculate-version.outputs.full_version }}
+          prerelease: true
           files: ./*.zip
-            
